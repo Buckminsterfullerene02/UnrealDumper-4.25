@@ -399,7 +399,7 @@ UE_UClass UE_UStructProperty::StaticClass() {
   return obj;
 }
 
-std::string UE_UNameProperty::GetTypeStr() const { return "struct FName"; }
+std::string UE_UNameProperty::GetTypeStr() const { return "FName"; }
 
 UE_UClass UE_UNameProperty::StaticClass() {
   static auto obj = (UE_UClass)(ObjObjects.FindObject("Class CoreUObject.NameProperty"));
@@ -411,7 +411,7 @@ UE_UClass UE_UObjectPropertyBase::GetPropertyClass() const {
 }
 
 std::string UE_UObjectPropertyBase::GetTypeStr() const {
-  return "struct " + GetPropertyClass().GetCppName() + "*";
+  return GetPropertyClass().GetCppName() + "*";
 }
 
 UE_UClass UE_UObjectPropertyBase::StaticClass() {
@@ -424,7 +424,7 @@ UE_UProperty UE_UArrayProperty::GetInner() const {
 }
 
 std::string UE_UArrayProperty::GetTypeStr() const {
-  return "struct TArray<" + GetInner().GetType().second + ">";
+  return "TArray<" + GetInner().GetType().second + ">";
 }
 
 UE_UClass UE_UArrayProperty::StaticClass() {
@@ -551,7 +551,7 @@ UE_UClass UE_UClassProperty::GetMetaClass() const {
 }
 
 std::string UE_UClassProperty::GetTypeStr() const {
-  return "struct " + GetMetaClass().GetCppName() + "*";
+  return GetMetaClass().GetCppName() + "*";
 }
 
 UE_UClass UE_UClassProperty::StaticClass() {
@@ -564,7 +564,7 @@ UE_UProperty UE_USetProperty::GetElementProp() const {
 }
 
 std::string UE_USetProperty::GetTypeStr() const {
-  return "struct TSet<" + GetElementProp().GetType().second + ">";
+  return "TSet<" + GetElementProp().GetType().second + ">";
 }
 
 UE_UClass UE_USetProperty::StaticClass() {
@@ -581,7 +581,7 @@ UE_UProperty UE_UMapProperty::GetValueProp() const {
 }
 
 std::string UE_UMapProperty::GetTypeStr() const {
-  return fmt::format("struct TMap<{}, {}>", GetKeyProp().GetType().second, GetValueProp().GetType().second);
+  return fmt::format("TMap<{}, {}>", GetKeyProp().GetType().second, GetValueProp().GetType().second);
 }
 
 UE_UClass UE_UMapProperty::StaticClass() {
@@ -594,7 +594,7 @@ UE_UProperty UE_UInterfaceProperty::GetInterfaceClass() const {
 }
 
 std::string UE_UInterfaceProperty::GetTypeStr() const {
-  return "struct TScriptInterface<" + GetInterfaceClass().GetType().second + ">";
+  return "TScriptInterface<" + GetInterfaceClass().GetType().second + ">";
 }
 
 UE_UClass UE_UInterfaceProperty::StaticClass() {
@@ -603,7 +603,7 @@ UE_UClass UE_UInterfaceProperty::StaticClass() {
 }
 
 std::string UE_UMulticastDelegateProperty::GetTypeStr() const {
-  return "struct FScriptMulticastDelegate";
+  return "FScriptMulticastDelegate";
 }
 
 UE_UClass UE_UMulticastDelegateProperty::StaticClass() {
@@ -612,7 +612,7 @@ UE_UClass UE_UMulticastDelegateProperty::StaticClass() {
 }
 
 std::string UE_UWeakObjectProperty::GetTypeStr() const {
-  return "struct TWeakObjectPtr<" + this->Cast<UE_UStructProperty>().GetTypeStr() + ">";
+  return "TWeakObjectPtr<" + this->Cast<UE_UStructProperty>().GetTypeStr() + ">";
 }
 
 UE_UClass UE_UWeakObjectProperty::StaticClass() {
@@ -695,7 +695,7 @@ type UE_FProperty::GetType() const {
   }
   case HASH("SoftObjectProperty"): {
     auto obj = this->Cast<UE_FObjectPropertyBase>();
-    type = { PropertyType::SoftObjectProperty, "struct TSoftObjectPtr<" + obj.GetPropertyClass().GetCppName() + ">" };
+    type = { PropertyType::SoftObjectProperty, "TSoftObjectPtr<" + obj.GetPropertyClass().GetCppName() + ">" };
     break;
   }
   case HASH("FloatProperty"): {
@@ -741,11 +741,11 @@ type UE_FProperty::GetType() const {
     break;
   }
   case HASH("NameProperty"): {
-    type = { PropertyType::NameProperty, "struct FName" };
+    type = { PropertyType::NameProperty, "FName" };
     break;
   }
   case HASH("DelegateProperty"): {
-    type = { PropertyType::DelegateProperty, "struct FDelegate" };
+    type = { PropertyType::DelegateProperty, "FDelegate" };
     break;
   }
   case HASH("SetProperty"): {
@@ -760,20 +760,20 @@ type UE_FProperty::GetType() const {
   }
   case HASH("WeakObjectProperty"): {
     auto obj = this->Cast<UE_FStructProperty>();
-    type = { PropertyType::WeakObjectProperty, "struct TWeakObjectPtr<" + obj.GetTypeStr() + ">" };
+    type = { PropertyType::WeakObjectProperty, "TWeakObjectPtr<" + obj.GetTypeStr() + ">" };
 
     break;
   }
   case HASH("StrProperty"): {
-    type = { PropertyType::StrProperty, "struct FString" };
+    type = { PropertyType::StrProperty, "FString" };
     break;
   }
   case HASH("TextProperty"): {
-    type = { PropertyType::TextProperty, "struct FText" };
+    type = { PropertyType::TextProperty, "FText" };
     break;
   }
   case HASH("MulticastSparseDelegateProperty"): {
-    type = { PropertyType::MulticastSparseDelegateProperty, "struct FMulticastSparseDelegate" };
+    type = { PropertyType::MulticastSparseDelegateProperty, "FMulticastSparseDelegate" };
     break;
   }
   case HASH("EnumProperty"): {
@@ -795,7 +795,7 @@ type UE_FProperty::GetType() const {
     break;
   }
   case HASH("MulticastInlineDelegateProperty"): {
-    type = { PropertyType::MulticastDelegateProperty, "struct FMulticastInlineDelegate" };
+    type = { PropertyType::MulticastDelegateProperty, "FMulticastInlineDelegate" };
     break;
   }
   case HASH("MapProperty"): {
@@ -814,7 +814,7 @@ type UE_FProperty::GetType() const {
     break;
   }
   case HASH("SoftClassProperty"): {
-    type = { PropertyType::SoftClassProperty, "struct TSoftClassPtr<UObject>" };
+    type = { PropertyType::SoftClassProperty, "TSoftClassPtr<UObject>" };
     break;
   }
   }
@@ -829,7 +829,7 @@ UE_UStruct UE_FStructProperty::GetStruct() const {
 }
 
 std::string UE_FStructProperty::GetTypeStr() const {
-  return "struct " + GetStruct().GetCppName();
+  return GetStruct().GetCppName();
 }
 
 UE_UClass UE_FObjectPropertyBase::GetPropertyClass() const {
@@ -837,7 +837,7 @@ UE_UClass UE_FObjectPropertyBase::GetPropertyClass() const {
 }
 
 std::string UE_FObjectPropertyBase::GetTypeStr() const {
-  return "struct " + GetPropertyClass().GetCppName() + "*";
+  return GetPropertyClass().GetCppName() + "*";
 }
 
 UE_FProperty UE_FArrayProperty::GetInner() const {
@@ -845,7 +845,7 @@ UE_FProperty UE_FArrayProperty::GetInner() const {
 }
 
 std::string UE_FArrayProperty::GetTypeStr() const {
-  return "struct TArray<" + GetInner().GetType().second + ">";
+  return "TArray<" + GetInner().GetType().second + ">";
 }
 
 UE_UEnum UE_FByteProperty::GetEnum() const {
@@ -882,7 +882,7 @@ UE_UClass UE_FClassProperty::GetMetaClass() const {
 }
 
 std::string UE_FClassProperty::GetTypeStr() const {
-  return "struct " + GetMetaClass().GetCppName() + "*";
+  return GetMetaClass().GetCppName() + "*";
 }
 
 UE_FProperty UE_FSetProperty::GetElementProp() const {
@@ -890,7 +890,7 @@ UE_FProperty UE_FSetProperty::GetElementProp() const {
 }
 
 std::string UE_FSetProperty::GetTypeStr() const {
-  return "struct TSet<" + GetElementProp().GetType().second + ">";
+  return "TSet<" + GetElementProp().GetType().second + ">";
 }
 
 UE_FProperty UE_FMapProperty::GetKeyProp() const {
@@ -902,7 +902,7 @@ UE_FProperty UE_FMapProperty::GetValueProp() const {
 }
 
 std::string UE_FMapProperty::GetTypeStr() const {
-  return fmt::format("struct TMap<{}, {}>", GetKeyProp().GetType().second, GetValueProp().GetType().second);
+  return fmt::format("TMap<{}, {}>", GetKeyProp().GetType().second, GetValueProp().GetType().second);
 }
 
 UE_UClass UE_FInterfaceProperty::GetInterfaceClass() const {
@@ -910,7 +910,7 @@ UE_UClass UE_FInterfaceProperty::GetInterfaceClass() const {
 }
 
 std::string UE_FInterfaceProperty::GetTypeStr() const {
-  return "struct TScriptInterface<I" + GetInterfaceClass().GetName() + ">";
+  return "TScriptInterface<I" + GetInterfaceClass().GetName() + ">";
 }
 
 UE_FName UE_FFieldPathProperty::GetPropertyName() const {
@@ -918,7 +918,7 @@ UE_FName UE_FFieldPathProperty::GetPropertyName() const {
 }
 
 std::string UE_FFieldPathProperty::GetTypeStr() const {
-  return "struct TFieldPath<F" + GetPropertyName().GetName() + ">";
+  return "TFieldPath<F" + GetPropertyName().GetName() + ">";
 }
 
 void UE_UPackage::GenerateBitPadding(std::vector<Member>& members, uint32 offset, uint8 bitOffset, uint8 size) {
@@ -1111,9 +1111,9 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
     m->Name = prop->GetName();
     m->Offset = prop->GetOffset();
 
-    if (m->Offset > offset) {
+    /*if (m->Offset > offset) {
       UE_UPackage::FillPadding(object, s.Members, offset, bitOffset, m->Offset, findPointers);
-    }
+    }*/
     if (type.first == PropertyType::BoolProperty && *(uint32*)type.second.data() != 'loob') {
       auto boolProp = prop;
       auto mask = boolProp->GetFieldMask();
@@ -1169,9 +1169,9 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
     }
   }
 
-  if (s.Size > offset) {
+  /*if (s.Size > offset) {
     UE_UPackage::FillPadding(object, s.Members, offset, bitOffset, s.Size, findPointers);
-  }
+  }*/
 
   arr.push_back(s);
 }
@@ -1229,7 +1229,7 @@ void UE_UPackage::SaveStruct(std::vector<Struct> &arr, FILE *file) {
     if (s.Functions.size()) {
       fwrite("\n", 1, 1, file);
       for (auto &f : s.Functions) {
-        fmt::print(file, "\n\t{}({}); // {} // ({}) // @ game+{:#08x}", f.CppName, f.Params, f.FullName, f.Flags, f.Func - Base);
+        fmt::print(file, "\n\t{}({});", f.CppName, f.Params);
       }
     }
     fmt::print(file, "\n}};\n\n");
@@ -1245,7 +1245,7 @@ void UE_UPackage::SaveStructSpacing(std::vector<Struct> &arr, FILE *file) {
     if (s.Functions.size()) {
       fwrite("\n", 1, 1, file);
       for (auto &f : s.Functions) {
-        fmt::print(file, "\n\t{:130} // {} // ({}) // @ game+{:#08x}", fmt::format("{}({});", f.CppName, f.Params), f.FullName, f.Flags, f.Func - Base);
+        fmt::print(file, "\n\t{:130}", fmt::format("{}({});", f.CppName, f.Params));
       }
     }
 
