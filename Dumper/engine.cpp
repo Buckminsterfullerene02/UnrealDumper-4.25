@@ -333,7 +333,8 @@ std::unordered_map<std::string, decltype(&engines[0])> games = {
   {"FortniteClient-Win64-Shipping", &engines[5]},
   {"TheIsleClient-Win64-Shipping", &engines[6]},
   {"PortalWars-Win64-Shipping", &engines[7]},
-  {"FSD-Win64-Shipping", &engines[0]}
+  {"FSD-Win64-Shipping", &engines[0]},
+  {"PROA34-Win64-Shipping", &engines[0]}
 };
 
 STATUS EngineInit(std::string game, void* image) {
