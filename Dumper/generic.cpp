@@ -84,3 +84,4 @@ bool TUObjectArray::IsObject(UE_UObject address) const {
 
 TUObjectArray ObjObjects;
 FNamePool NamePoolData;
+ProcessEventType ProcessEvent;

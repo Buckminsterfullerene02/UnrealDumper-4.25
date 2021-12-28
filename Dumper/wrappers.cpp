@@ -147,6 +147,56 @@ UE_UClass UE_UField::StaticClass() {
   return obj;
 };
 
+auto ReflectedFunctionBase::IsValid() -> bool {
+  if (!function) {
+    AssignFunction(ObjObjects.FindObject(GetName()).object);
+    if (!function) {
+      printf("Unable to locate function");
+      return false;
+    }
+  }
+  return function;
+}
+
+auto UE_UAssetRegistry::GetAllAssets(TArray& outAssetData, bool bIncludeOnlyOnDiskAssets) -> bool {
+  if (!Functions::getAllAssets.IsValid()) { return false; }
+
+  GetAllAssetsParams params{ outAssetData, bIncludeOnlyOnDiskAssets };
+  Functions::getAllAssets(this, params);
+
+  outAssetData.copyFast(params.outAssetData);
+  return params.returnValue;
+}
+
+auto UE_UAssetRegistryHelpers::VerifySelf() -> bool {
+  if (!self) {
+    self = reinterpret_cast<UE_UAssetRegistryHelpers*>(ObjObjects.FindObject("AssetRegistryHelpers AssetRegistry.Default__AssetRegistryHelpers").object);
+    if (!self) {
+      printf("Unable to locate AssetRegistryHelpers\n");
+      return false;
+    }
+  }
+  return true;
+}
+
+auto UE_UAssetRegistryHelpers::GetAssetRegistry() -> UE_UAssetRegistry* {
+  if (!VerifySelf()) { return nullptr; }
+  if (!StaticFunctions::getAssetRegistry.IsValid()) { return nullptr; }
+
+  GetAssetRegistryParams params{ nullptr };
+  StaticFunctions::getAssetRegistry(params);
+  return params.returnValue;
+}
+
+auto UE_UAssetRegistryHelpers::GetAsset(UE_FAssetData& _inAssetData) -> uint8* {
+  if (!VerifySelf()) { return nullptr; }
+  if (!StaticFunctions::getAsset.IsValid()) { return nullptr; }
+
+  GetAssetParams params{ _inAssetData };
+  StaticFunctions::getAsset(params);
+  return params.returnValue;
+}
+
 std::string IUProperty::GetName() const {
   return ((UE_UProperty*)(this->prop))->GetName();
 }

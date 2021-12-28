@@ -93,7 +93,7 @@ enum class PropertyType {
 };
 
 class UE_UObject {
-protected:
+public:
   uint8* object;
 
 public:
@@ -131,6 +131,101 @@ public:
   using UE_UObject::UE_UObject;
   UE_UField GetNext() const;
   static UE_UClass StaticClass();
+};
+
+struct UE_FAssetData
+{
+  using FAssetDataTagMapSharedView = void*; // <-- Wrapper to a pointer to a map
+
+  // Reflected
+  UE_FName objectPath;                           // Size: 0x8
+  UE_FName packageName;                          // Size: 0x8
+  UE_FName packagePath;                          // Size: 0x8
+  UE_FName assetName;                            // Size: 0x8
+  UE_FName assetClass;                           // Size: 0x8
+
+  // Non-reflected
+  // It gets bad below here because of changes that the ue devs made
+  // I've put notes for each member variable where I noticed a changed
+  // It looks like FAssetData needs to be put into a VC because of this
+  // We really only need the reflected data but we also need the size so that the TArray for_each loop works properly
+  // T size of '/Script/CoreUObject.AssetData' does take into account the unreflected variables, so we could use that instead of the hardcoded struct for the size
+  FAssetDataTagMapSharedView tagsAndValues;   // Size: 0x8
+  // This padding might be 'TSharedPtr<FAssetBundleData, ESPMode::ThreadSafe> TaggedAssetBundles' which was added in 4.27
+  uint8_t padding[0x8]; // Appears to be right, but how am I missing 8 bytes ?
+  // The ChunkIDs array allocator was changed to 'TInlineAllocator<2>' in 4.27
+  TArray chunkIDs;                   // Size: 0x10
+  uint32_t packageFlags;             // Size: 0x4
+};
+
+class ReflectedFunctionBase {
+protected:
+  uint8* function{ nullptr };
+  const char* functionName{};
+public:
+  ReflectedFunctionBase(const char* _functionName) : function(nullptr), functionName(_functionName) {}
+  auto GetName() const -> const char* { return functionName; }
+  auto AssignFunction(uint8* _function) -> void { function = _function; }
+  auto IsValid() -> bool;
+};
+
+template<typename Owner>
+class StaticReflectedFunctionBase : public ReflectedFunctionBase {
+public:
+  template<typename ParamsType>
+  auto operator()(ParamsType& params) {
+    Owner::self->processEvent(this->function, &params);
+  }
+};
+
+class InstancedReflectedFunction : public ReflectedFunctionBase {
+public:
+  template<typename ParamsType>
+  auto operator()(UE_UObject instance, ParamsType& params) {
+    instance->processEvent(this->function, &params);
+  }
+};
+
+class UE_UAssetRegistry {
+public:
+  struct Functions {
+    static inline InstancedReflectedFunction getAllAssets{ "/Script/AssetRegistry.AssetRegistry.GetAllAssets" };
+  };
+
+  struct GetAllAssetsParams {
+    TArray outAssetData;
+    bool bIncludeOnlyOnDiskAssets;
+    bool returnValue;
+  };
+
+  auto GetAllAssets(TArray &outAssetData, bool bIncludeOnlyOnDiskAssets) -> bool;
+};
+
+class UE_UAssetRegistryHelpers {
+public:
+  using StaticReflectedFunction = StaticReflectedFunctionBase<UE_UAssetRegistryHelpers>;
+
+  static inline UE_UAssetRegistryHelpers* self{ nullptr };
+  struct StaticFunctions {
+    static inline StaticReflectedFunction getAssetRegistry{ "/Script/AssetRegistry.AssetRegistryHelpers.GetAssetRegistry" };
+    static inline StaticReflectedFunction getAsset{ "/Script/AssetRegistry.AssetRegistryHelpers.GetAsset" };
+  };
+
+  struct GetAssetRegistryParams {
+    UE_UAssetRegistry* returnValue;
+  };
+
+  struct GetAssetParams {
+    UE_FAssetData inAssetData;
+    uint8* returnValue;
+  };
+  
+public:
+  auto static GetAssetRegistry()->UE_UAssetRegistry*;
+  auto static GetAsset(UE_FAssetData& _inAssetData) -> uint8*;
+
+private:
+  auto static VerifySelf() -> bool;
 };
 
 typedef std::pair<PropertyType, std::string> type;
