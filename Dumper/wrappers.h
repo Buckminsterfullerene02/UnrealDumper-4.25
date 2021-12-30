@@ -192,7 +192,7 @@ public:
 class UE_UAssetRegistry {
 public:
   struct Functions {
-    static inline InstancedReflectedFunction getAllAssets{ "/Script/AssetRegistry.AssetRegistry.GetAllAssets" };
+    static inline InstancedReflectedFunction getAllAssets{ "Function AssetRegistry.AssetRegistry.GetAllAssets" };
   };
 
   struct GetAllAssetsParams {
@@ -210,8 +210,8 @@ public:
 
   static inline void* self{ nullptr };
   struct StaticFunctions {
-    static inline StaticReflectedFunction getAssetRegistry{ "/Script/AssetRegistry.AssetRegistryHelpers.GetAssetRegistry" };
-    static inline StaticReflectedFunction getAsset{ "/Script/AssetRegistry.AssetRegistryHelpers.GetAsset" };
+    static inline StaticReflectedFunction getAssetRegistry{ "Function AssetRegistry.AssetRegistryHelpers.GetAssetRegistry" };
+    static inline StaticReflectedFunction getAsset{ "Function AssetRegistry.AssetRegistryHelpers.GetAsset" };
   };
 
   struct GetAssetRegistryParams {
