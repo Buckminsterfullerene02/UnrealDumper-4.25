@@ -369,10 +369,11 @@ STATUS EngineInit(std::string game, void* image) {
   }
 
   if (found != 7) return STATUS::ENGINE_FAILED;
+  if (!process) return STATUS::ENGINE_FAILED;
 
   NamePoolData = *(decltype(NamePoolData)*)names;
   ObjObjects = *(decltype(ObjObjects)*)objects;
-  ProcessEvent = *(decltype(ProcessEvent)*)process;
+  ProcessEvent = (decltype(ProcessEvent))process;
 
   auto entry = UE_FNameEntry(NamePoolData.GetEntry(0));
 
