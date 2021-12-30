@@ -151,7 +151,7 @@ auto ReflectedFunctionBase::IsValid() -> bool {
   if (!function) {
     AssignFunction(ObjObjects.FindObject(GetName()).object);
     if (!function) {
-      printf("Unable to locate function");
+      fmt::print("Unable to located reflected function '{}'.\n", GetName());
       return false;
     }
   }
