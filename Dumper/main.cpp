@@ -1,6 +1,7 @@
 #include <fmt/core.h>
 #include "dumper.h"
 #include "utils.h"
+#include "wrappers.h"
 
 int main(int argc, char* argv[])
 {
@@ -28,6 +29,31 @@ int main(int argc, char* argv[])
     end = GetTime();
     time = (end - start) / 10000;
     fmt::print("Init time: {} ms\n", time);
+
+    fmt::print("Loading all assets\n");
+    start = GetTime();
+    UE_UAssetRegistry* asset_registry = UE_UAssetRegistryHelpers::GetAssetRegistry();
+    if (!asset_registry) {
+        fmt::print("Was unable to load assets because AssetRegistry wasn't found, defaulting to whatever is already loaded.");
+    } else {
+        TArray all_assets;
+        asset_registry->GetAllAssets(all_assets, false);
+        fmt::print("Number of assets to load: {}", all_assets.Count);
+        all_assets.ForEach([](void* asset) {
+            if (!asset) { return false; }
+
+            UE_FAssetData typed_asset = *static_cast<UE_FAssetData*>(asset);
+
+            // Load asset
+            UE_UAssetRegistryHelpers::GetAsset(typed_asset);
+
+            // Returning true will stop the loop, but we want all assets so lets return false.
+            return false;
+        });
+    }
+    end = GetTime();
+    time = (end - start) / 10000;
+    fmt::print("Asset loading time: {} ms\n", time);
 
     start = GetTime();
     switch (dumper->Dump())
