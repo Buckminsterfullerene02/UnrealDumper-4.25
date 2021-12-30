@@ -170,7 +170,7 @@ auto UE_UAssetRegistry::GetAllAssets(TArray& outAssetData, bool bIncludeOnlyOnDi
 
 auto UE_UAssetRegistryHelpers::VerifySelf() -> bool {
   if (!self) {
-    self = reinterpret_cast<UE_UAssetRegistryHelpers*>(ObjObjects.FindObject("AssetRegistryHelpers AssetRegistry.Default__AssetRegistryHelpers").object);
+    self = static_cast<void*>(ObjObjects.FindObject("AssetRegistryHelpers AssetRegistry.Default__AssetRegistryHelpers").object);
     if (!self) {
       printf("Unable to locate AssetRegistryHelpers\n");
       return false;

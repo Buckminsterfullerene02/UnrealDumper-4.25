@@ -85,3 +85,12 @@ bool TUObjectArray::IsObject(UE_UObject address) const {
 TUObjectArray ObjObjects;
 FNamePool NamePoolData;
 ProcessEventType ProcessEvent;
+
+void TArray::ForEach(ForEachCallable callable) {
+    static UE_UStruct StaticAssetData = static_cast<UE_UStruct>(ObjObjects.FindObject("ScriptStruct AssetRegistry.AssetData"));
+    for (size_t i = 0; i < Count; i++)
+    {
+        void* elem = reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(Data) + (i + StaticAssetData.GetSize()));
+        if (callable(elem)) { break; }
+    }
+}

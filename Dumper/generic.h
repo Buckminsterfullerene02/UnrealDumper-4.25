@@ -2,18 +2,9 @@
 #include "defs.h"
 #include <functional>
 
-UE_UStruct StaticAssetData{ nullptr };
-
 struct TArray {
-  template<typename Callable>
-  uint8* ForEach(Callable callable) {
-    StaticAssetData = ObjObjects->FindObjects("ScriptStruct AssetRegistry.AssetData");
-    for (size_t i = 0; i < Count; i++)
-    {
-      uint8 elem = reinterpret_cast<uint8*>(reinterpret_cast<uintptr_t>(Data) + (i + StaticAssetData->GetSize()));
-      if (callable(elem)) { break; }
-    }
-  }
+  using ForEachCallable = std::function<bool(void*)>;
+  void ForEach(ForEachCallable callable);
   auto copyFast(const TArray& other) -> void {
     Data = other.Data;
     Count = other.Count;
@@ -57,7 +48,7 @@ struct TUObjectArray {
   bool IsObject(UE_UObject address) const;
 };
 
-using ProcessEventType = UE_UObject * (*)(UE_UObject* p_this, class UFunction*, void* parms);
+using ProcessEventType = void* (*)(void* p_this, void* function, void* parms);
 
 extern TUObjectArray ObjObjects;
 extern FNamePool NamePoolData;

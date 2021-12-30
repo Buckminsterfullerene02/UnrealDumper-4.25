@@ -133,6 +133,7 @@ public:
   static UE_UClass StaticClass();
 };
 
+/**/
 struct UE_FAssetData
 {
   using FAssetDataTagMapSharedView = void*; // <-- Wrapper to a pointer to a map
@@ -160,12 +161,12 @@ struct UE_FAssetData
 
 class ReflectedFunctionBase {
 protected:
-  uint8* function{ nullptr };
+  void* function{ nullptr };
   const char* functionName{};
 public:
   ReflectedFunctionBase(const char* _functionName) : function(nullptr), functionName(_functionName) {}
   auto GetName() const -> const char* { return functionName; }
-  auto AssignFunction(uint8* _function) -> void { function = _function; }
+  auto AssignFunction(void* _function) -> void { function = _function; }
   auto IsValid() -> bool;
 };
 
@@ -174,15 +175,17 @@ class StaticReflectedFunctionBase : public ReflectedFunctionBase {
 public:
   template<typename ParamsType>
   auto operator()(ParamsType& params) {
-    Owner::self->processEvent(this->function, &params);
+    //Owner::self->processEvent(this->function, &params);
+    ProcessEvent(Owner::self, this->function, &params);
   }
 };
 
 class InstancedReflectedFunction : public ReflectedFunctionBase {
 public:
   template<typename ParamsType>
-  auto operator()(UE_UObject instance, ParamsType& params) {
-    instance->processEvent(this->function, &params);
+  auto operator()(void* instance, ParamsType& params) {
+    //instance->processEvent(this->function, &params);
+    ProcessEvent(instance, this->function, &params);
   }
 };
 
@@ -205,7 +208,7 @@ class UE_UAssetRegistryHelpers {
 public:
   using StaticReflectedFunction = StaticReflectedFunctionBase<UE_UAssetRegistryHelpers>;
 
-  static inline UE_UAssetRegistryHelpers* self{ nullptr };
+  static inline void* self{ nullptr };
   struct StaticFunctions {
     static inline StaticReflectedFunction getAssetRegistry{ "/Script/AssetRegistry.AssetRegistryHelpers.GetAssetRegistry" };
     static inline StaticReflectedFunction getAsset{ "/Script/AssetRegistry.AssetRegistryHelpers.GetAsset" };
@@ -227,6 +230,7 @@ public:
 private:
   auto static VerifySelf() -> bool;
 };
+//*/
 
 typedef std::pair<PropertyType, std::string> type;
 
